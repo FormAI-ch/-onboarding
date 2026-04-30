@@ -1,495 +1,312 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ad'Form — Accélération IA & Business</title>
-  <meta name="description" content="Qualifiez votre demande avant notre échange — Ad'Form">
-  <style>
-    :root {
-      --navy:   #1B2B5E;
-      --orange: #FF6B2B;
-      --bg:     #F5F6F8;
-      --white:  #FFFFFF;
-      --text:   #2D2D2D;
-      --muted:  #6B7280;
-      --border: #E2E5EC;
-      --error:  #DC2626;
-      --radius: 14px;
-      --shadow: 0 4px 32px rgba(27,43,94,0.10);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qualification Lead | Ad'Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #1B2B5E;
+            --orange: #FF6B2B;
+            --orange-hover: #E55A1F;
+            --bg-light: #F5F6F8;
+            --text-dark: #1A1A1A;
+        }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: white;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 16px 60px;
-    }
+        .bg-navy { background-color: var(--navy); }
+        .text-navy { color: var(--navy); }
+        .bg-orange { background-color: var(--orange); }
+        .border-navy { border-color: var(--navy); }
+        
+        .step-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
 
-    /* ── Header ── */
-    header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--navy);
-      letter-spacing: -0.5px;
-    }
-    .logo span { color: var(--orange); }
-    .tagline {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 4px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
+        .step-content.active {
+            display: block;
+        }
 
-    /* ── Card ── */
-    .card {
-      background: var(--white);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      width: 100%;
-      max-width: 520px;
-      padding: 40px 40px 36px;
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    /* ── Progress ── */
-    .progress-wrap {
-      margin-bottom: 28px;
-    }
-    .progress-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-    .progress-bar {
-      height: 4px;
-      background: var(--border);
-      border-radius: 99px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: var(--orange);
-      border-radius: 99px;
-      transition: width 0.35s ease;
-      width: 25%;
-    }
+        .progress-bar {
+            height: 4px;
+            background-color: var(--bg-light);
+            width: 100%;
+            border-radius: 2px;
+            overflow: hidden;
+        }
 
-    /* ── Steps ── */
-    .step { display: none; }
-    .step.active { display: block; }
+        #progress-fill {
+            height: 100%;
+            background-color: var(--orange);
+            width: 25%;
+            transition: width 0.4s ease;
+        }
 
-    .step-heading {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--navy);
-      margin-bottom: 6px;
-    }
-    .step-question {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--orange);
+            box-shadow: 0 0 0 2px rgba(255, 107, 43, 0.1);
+        }
 
-    /* ── Rank badge ── */
-    .field-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .rank-badge {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--navy);
-      color: var(--white);
-      font-size: 0.75rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
+        .btn-primary {
+            background-color: var(--orange);
+            transition: all 0.3s ease;
+        }
 
-    /* ── Inputs ── */
-    input[type="text"],
-    textarea {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.9rem;
-      color: var(--text);
-      font-family: inherit;
-      background: var(--white);
-      outline: none;
-      transition: border-color 0.18s;
-    }
-    input[type="text"]:focus,
-    textarea:focus {
-      border-color: var(--navy);
-    }
-    input[type="text"].error,
-    textarea.error {
-      border-color: var(--error);
-    }
-    textarea { resize: vertical; min-height: 120px; }
+        .btn-primary:hover {
+            background-color: var(--orange-hover);
+            transform: translateY(-1px);
+        }
 
-    .field-error {
-      font-size: 0.75rem;
-      color: var(--error);
-      margin-top: 5px;
-      display: none;
-    }
-    .field-error.visible { display: block; }
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-    /* ── Buttons ── */
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 24px;
-    }
-    .btn-primary {
-      flex: 1;
-      background: var(--orange);
-      color: var(--white);
-      border: none;
-      border-radius: 8px;
-      padding: 13px 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: background 0.18s, transform 0.1s;
-    }
-    .btn-primary:hover { background: #e85c22; }
-    .btn-primary:active { transform: scale(0.98); }
+        .service-rank {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
 
-    .btn-back {
-      background: none;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      padding: 13px 18px;
-      font-size: 0.9rem;
-      color: var(--muted);
-      font-weight: 500;
-      cursor: pointer;
-      transition: border-color 0.18s, color 0.18s;
-    }
-    .btn-back:hover { border-color: var(--navy); color: var(--navy); }
-
-    /* ── Step 4 confirmation ── */
-    .confirm-box {
-      border-left: 4px solid var(--orange);
-      background: var(--navy);
-      border-radius: 0 10px 10px 0;
-      padding: 24px 22px;
-      margin-top: 20px;
-      color: var(--white);
-    }
-    .confirm-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--orange);
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .confirm-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .confirm-sub {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.65);
-    }
-
-    .confirm-contact {
-      margin-top: 24px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      text-align: center;
-    }
-    .confirm-contact a {
-      color: var(--orange);
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .confirm-contact a:hover { text-decoration: underline; }
-
-    .btn-reset {
-      display: block;
-      text-align: center;
-      margin-top: 18px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      cursor: pointer;
-      background: none;
-      border: none;
-      font-family: inherit;
-      text-decoration: underline;
-    }
-    .btn-reset:hover { color: var(--navy); }
-
-    /* ── Footer ── */
-    footer {
-      margin-top: 32px;
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    /* ── Toast ── */
-    #toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: #111827;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      opacity: 0;
-      transition: opacity 0.25s, transform 0.25s;
-      pointer-events: none;
-      z-index: 100;
-      white-space: nowrap;
-    }
-    #toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    @media (max-width: 580px) {
-      .card { padding: 28px 20px 24px; }
-      body { padding: 24px 12px 48px; }
-    }
-  </style>
+        .rank-number {
+            background-color: var(--navy);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 
-  <header>
-    <div class="logo">Ad<span>'</span>Form</div>
-    <div class="tagline">Accélération IA &amp; Business</div>
-  </header>
+    <!-- Header / Branding -->
+    <header class="py-8 px-6 text-center">
+        <div class="max-w-xl mx-auto flex flex-col items-center">
+            <div class="mb-4">
+                <span class="text-2xl font-bold tracking-tighter text-navy uppercase">Ad'<span class="text-orange-600">Form</span></span>
+            </div>
+            <div class="progress-container w-full max-w-md mt-4">
+                <div class="progress-bar">
+                    <div id="progress-fill"></div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest font-semibold" id="step-indicator">Étape 1 sur 4</p>
+            </div>
+        </div>
+    </header>
 
-  <div class="card">
+    <main class="flex-grow flex items-start justify-center px-6 pt-4 pb-20">
+        <div class="w-full max-w-xl bg-white p-2 md:p-8">
+            
+            <form id="leadForm" onsubmit="event.preventDefault();">
+                <!-- ETAPE 1 : Secteur -->
+                <div class="step-content active" id="step1">
+                    <h2 class="text-2xl md:text-3xl font-bold text-navy mb-2">Commençons par le début.</h2>
+                    <p class="text-gray-500 mb-8">Quel est votre secteur d'activité ?</p>
+                    <input type="text" id="sector" placeholder="Ex: Immobilier, E-commerce, Conseil..." 
+                           class="w-full p-4 border-b-2 border-gray-200 text-lg transition-all" required>
+                    <div class="mt-12">
+                        <button type="button" onclick="nextStep(2)" class="btn-primary text-white px-8 py-4 rounded-full font-bold flex items-center group">
+                            Continuer
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 group-hover:ml-3 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
 
-    <!-- Progress -->
-    <div class="progress-wrap">
-      <div class="progress-label" id="progressLabel">Étape 1 sur 4</div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-    </div>
+                <!-- ETAPE 2 : Services Top 3 -->
+                <div class="step-content" id="step2">
+                    <h2 class="text-2xl md:text-3xl font-bold text-navy mb-2">Vos générateurs de revenus.</h2>
+                    <p class="text-gray-500 mb-8">Classez les 3 services qui vous rapportent le plus aujourd'hui :</p>
+                    
+                    <div class="space-y-4">
+                        <div class="service-rank">
+                            <span class="rank-number">1</span>
+                            <input type="text" id="service1" placeholder="Service principal" class="w-full p-3 border-b border-gray-200 focus:border-orange-500">
+                        </div>
+                        <div class="service-rank">
+                            <span class="rank-number">2</span>
+                            <input type="text" id="service2" placeholder="Second service" class="w-full p-3 border-b border-gray-200">
+                        </div>
+                        <div class="service-rank">
+                            <span class="rank-number">3</span>
+                            <input type="text" id="service3" placeholder="Troisième service" class="w-full p-3 border-b border-gray-200">
+                        </div>
+                    </div>
 
-    <!-- Step 1 -->
-    <div class="step active" id="step1">
-      <div class="step-heading">Commençons par le début.</div>
-      <div class="step-question">Quel est votre secteur d'activité ?</div>
-      <input type="text" id="sector" placeholder="Ex: Immobilier, E-commerce, Conseil…" autocomplete="off">
-      <div class="field-error" id="sectorError">Merci de renseigner votre secteur d'activité.</div>
-      <div class="btn-row">
-        <button class="btn-primary" onclick="goNext(1)">Continuer <span>→</span></button>
-      </div>
-    </div>
+                    <div class="mt-12 flex items-center space-x-4">
+                        <button type="button" onclick="nextStep(3)" class="btn-primary text-white px-8 py-4 rounded-full font-bold">
+                            Suivant
+                        </button>
+                        <button type="button" onclick="prevStep(1)" class="text-gray-400 hover:text-navy text-sm font-semibold uppercase tracking-wider">Retour</button>
+                    </div>
+                </div>
 
-    <!-- Step 2 -->
-    <div class="step" id="step2">
-      <div class="step-heading">Vos générateurs de revenus.</div>
-      <div class="step-question">Classez les 3 services qui vous rapportent le plus aujourd'hui :</div>
+                <!-- ETAPE 3 : Problématique -->
+                <div class="step-content" id="step3">
+                    <h2 class="text-2xl md:text-3xl font-bold text-navy mb-2">Le point de blocage.</h2>
+                    <p class="text-gray-500 mb-8">Quelle est votre problématique actuelle majeure ?</p>
+                    <textarea id="problem" rows="4" placeholder="Dites-nous ce qui vous empêche de passer au niveau supérieur..." 
+                              class="w-full p-4 border-2 border-gray-100 bg-gray-50 rounded-xl transition-all resize-none"></textarea>
+                    
+                    <div class="mt-12 flex items-center space-x-4">
+                        <button type="button" id="submit-btn" onclick="submitForm()" class="btn-primary text-white px-8 py-4 rounded-full font-bold flex items-center">
+                            Finaliser ma demande
+                        </button>
+                        <button type="button" onclick="prevStep(2)" class="text-gray-400 hover:text-navy text-sm font-semibold uppercase tracking-wider">Retour</button>
+                    </div>
+                </div>
 
-      <div class="field-group">
-        <div class="rank-badge">1</div>
-        <input type="text" id="service1" placeholder="Service principal" autocomplete="off">
-      </div>
-      <div class="field-group">
-        <div class="rank-badge">2</div>
-        <input type="text" id="service2" placeholder="Second service" autocomplete="off">
-      </div>
-      <div class="field-group">
-        <div class="rank-badge">3</div>
-        <input type="text" id="service3" placeholder="Troisième service" autocomplete="off">
-      </div>
-      <div class="field-error" id="servicesError">Merci de renseigner au moins votre service principal.</div>
+                <!-- ETAPE 4 : Confirmation -->
+                <div class="step-content text-center" id="step4">
+                    <div class="mb-6 flex justify-center">
+                        <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-bold text-navy mb-4">C'est noté !</h2>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        Merci pour ces précisions. Nous avons maintenant les éléments clés pour faire de notre échange un moment à forte valeur ajoutée pour vous.
+                    </p>
+                    <div class="bg-navy text-white p-6 rounded-2xl inline-block w-full max-w-sm">
+                        <p class="text-sm opacity-80 mb-2 uppercase tracking-widest">À très vite</p>
+                        <p class="font-bold text-lg">Meeting avec Louis</p>
+                        <p class="text-sm opacity-80 mt-2">Nous nous réjouissons de vous rencontrer.</p>
+                    </div>
+                    <div class="mt-8">
+                        <a href="mailto:contact@formai.ch" class="text-orange-500 font-semibold hover:underline text-sm">Une question ? contact@formai.ch</a>
+                    </div>
+                </div>
+            </form>
 
-      <div class="btn-row">
-        <button class="btn-back" onclick="goBack(2)">← Retour</button>
-        <button class="btn-primary" onclick="goNext(2)">Suivant <span>→</span></button>
-      </div>
-    </div>
+        </div>
+    </main>
 
-    <!-- Step 3 -->
-    <div class="step" id="step3">
-      <div class="step-heading">Le point de blocage.</div>
-      <div class="step-question">Quelle est votre problématique actuelle majeure ?</div>
-      <textarea id="problem" placeholder="Dites-nous ce qui vous empêche de passer au niveau supérieur…" rows="5"></textarea>
-      <div class="field-error" id="problemError">Merci de décrire votre problématique principale.</div>
-      <div class="btn-row">
-        <button class="btn-back" onclick="goBack(3)">← Retour</button>
-        <button class="btn-primary" onclick="submitForm()">Finaliser ma demande <span>→</span></button>
-      </div>
-    </div>
+    <footer class="py-6 px-6 border-t border-gray-100">
+        <div class="max-w-xl mx-auto flex justify-between items-center opacity-50 text-[10px] uppercase tracking-widest font-bold">
+            <span>Ad'Form &copy; 2024</span>
+            <span>Accélération IA & Business</span>
+        </div>
+    </footer>
 
-    <!-- Step 4 -->
-    <div class="step" id="step4">
-      <div class="step-heading">C'est noté !</div>
-      <div class="step-question">Merci pour ces précisions. Nous avons maintenant les éléments clés pour faire de notre échange un moment à forte valeur ajoutée pour vous.</div>
+    <script>
+        // CONFIGURATION WEBHOOK
+        const WEBHOOK_URL = "https://hook.eu2.make.com/1o9511k2vrfx37vzwet7vdyifplblie9"; 
 
-      <div class="confirm-box">
-        <div class="confirm-label">À très vite</div>
-        <div class="confirm-title">Meeting avec Louis</div>
-        <div class="confirm-sub">Nous nous réjouissons de vous rencontrer.</div>
-        <!--
-          Pour ajouter un lien Calendly, décommentez et modifiez la ligne ci-dessous :
-          <div style="margin-top:16px"><a href="https://calendly.com/votre-lien" style="color:#FF6B2B;font-weight:600;font-size:.85rem;">→ Réserver mon créneau</a></div>
-        -->
-      </div>
-
-      <div class="confirm-contact">
-        Une question ? <a href="mailto:contact@formai.ch">contact@formai.ch</a>
-      </div>
-
-      <button class="btn-reset" onclick="resetForm()">Soumettre une nouvelle réponse</button>
-    </div>
-
-  </div>
-
-  <footer>Ad'Form &copy; 2024 &nbsp;·&nbsp; Accélération IA &amp; Business</footer>
-
-  <div id="toast"></div>
-
-  <script>
-    // ── CONFIGURE YOUR WEBHOOK URL HERE ──────────────────────────────────────
-    const WEBHOOK_URL = 'https://hook.eu2.make.com/1o9511k2vrfx37vzwet7vdyifplblie9'; // Collez votre URL Make ou Zapier entre les guillemets
-    // ─────────────────────────────────────────────────────────────────────────
-
-    let currentStep = 1;
-
-    function showStep(n) {
-      currentStep = n;
-      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-      document.getElementById('step' + n).classList.add('active');
-      document.getElementById('progressLabel').textContent = 'Étape ' + n + ' sur 4';
-      document.getElementById('progressFill').style.width = (n / 4 * 100) + '%';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function clearError(fieldId, errorId) {
-      const field = document.getElementById(fieldId);
-      const err = document.getElementById(errorId);
-      if (field) field.classList.remove('error');
-      if (err) err.classList.remove('visible');
-    }
-
-    function showError(fieldId, errorId) {
-      const field = document.getElementById(fieldId);
-      const err = document.getElementById(errorId);
-      if (field) field.classList.add('error');
-      if (err) err.classList.add('visible');
-      if (field) field.focus();
-    }
-
-    function validateStep(n) {
-      if (n === 1) {
-        clearError('sector', 'sectorError');
-        if (!document.getElementById('sector').value.trim()) {
-          showError('sector', 'sectorError');
-          return false;
+        function updateProgress(step) {
+            const fill = document.getElementById('progress-fill');
+            const indicator = document.getElementById('step-indicator');
+            const percentage = (step / 4) * 100;
+            fill.style.width = percentage + '%';
+            indicator.innerText = `Étape ${step} sur 4`;
         }
-      }
-      if (n === 2) {
-        clearError('service1', 'servicesError');
-        if (!document.getElementById('service1').value.trim()) {
-          showError('service1', 'servicesError');
-          return false;
+
+        function nextStep(step) {
+            if (step === 2 && document.getElementById('sector').value.trim() === '') {
+                showToast("Veuillez renseigner votre secteur.");
+                return;
+            }
+
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            updateProgress(step);
         }
-      }
-      if (n === 3) {
-        clearError('problem', 'problemError');
-        if (!document.getElementById('problem').value.trim()) {
-          showError('problem', 'problemError');
-          return false;
+
+        function prevStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            updateProgress(step);
         }
-      }
-      return true;
-    }
 
-    function goNext(from) {
-      if (!validateStep(from)) return;
-      showStep(from + 1);
-    }
+        async function submitForm() {
+            const btn = document.getElementById('submit-btn');
+            const originalText = btn.innerHTML;
+            
+            // Collecte des données
+            const formData = {
+                sector: document.getElementById('sector').value,
+                top_services: [
+                    document.getElementById('service1').value,
+                    document.getElementById('service2').value,
+                    document.getElementById('service3').value
+                ],
+                problematic: document.getElementById('problem').value,
+                source: window.location.href,
+                submittedAt: new Date().toISOString()
+            };
 
-    function goBack(from) {
-      showStep(from - 1);
-    }
+            // État de chargement
+            btn.disabled = true;
+            btn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Envoi...
+            `;
 
-    async function submitForm() {
-      if (!validateStep(3)) return;
+            const sendRequest = async (retries = 0) => {
+                try {
+                    const response = await fetch(WEBHOOK_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', 
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                    return true;
+                } catch (error) {
+                    if (retries < 5) {
+                        const delay = Math.pow(2, retries) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return sendRequest(retries + 1);
+                    }
+                    throw error;
+                }
+            };
 
-      const payload = {
-        sector: document.getElementById('sector').value.trim(),
-        top3services: [
-          document.getElementById('service1').value.trim(),
-          document.getElementById('service2').value.trim(),
-          document.getElementById('service3').value.trim(),
-        ].filter(Boolean),
-        problem: document.getElementById('problem').value.trim(),
-        sourceURL: window.location.href,
-        timestamp: new Date().toISOString(),
-      };
-
-      if (WEBHOOK_URL) {
-        try {
-          await fetch(WEBHOOK_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-        } catch (_) {
-          // échec silencieux — l'utilisateur voit quand même l'étape 4
+            try {
+                await sendRequest();
+                nextStep(4);
+            } catch (error) {
+                console.error("Erreur d'envoi Webhook:", error);
+                nextStep(4); 
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
         }
-      }
 
-      showStep(4);
-    }
-
-    function resetForm() {
-      ['sector', 'service1', 'service2', 'service3', 'problem'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) { el.value = ''; el.classList.remove('error'); }
-      });
-      document.querySelectorAll('.field-error').forEach(e => e.classList.remove('visible'));
-      showStep(1);
-    }
-
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 3000);
-    }
-
-    // Init
-    showStep(1);
-  </script>
+        function showToast(message) {
+            const input = document.querySelector('.step-content.active input');
+            if (input) {
+                input.classList.add('border-red-500');
+                setTimeout(() => input.classList.remove('border-red-500'), 2000);
+            }
+        }
+    </script>
 </body>
 </html>
