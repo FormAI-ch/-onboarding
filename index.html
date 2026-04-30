@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ad'Form — Accélération IA & Business</title>
+  <meta name="description" content="Qualifiez votre demande avant notre échange — Ad'Form">
+  <style>
+    :root {
+      --navy:   #1B2B5E;
+      --orange: #FF6B2B;
+      --bg:     #F5F6F8;
+      --white:  #FFFFFF;
+      --text:   #2D2D2D;
+      --muted:  #6B7280;
+      --border: #E2E5EC;
+      --error:  #DC2626;
+      --radius: 14px;
+      --shadow: 0 4px 32px rgba(27,43,94,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px 60px;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--orange); }
+    .tagline {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 520px;
+      padding: 40px 40px 36px;
+    }
+
+    /* ── Progress ── */
+    .progress-wrap {
+      margin-bottom: 28px;
+    }
+    .progress-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--orange);
+      border-radius: 99px;
+      transition: width 0.35s ease;
+      width: 25%;
+    }
+
+    /* ── Steps ── */
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .step-heading {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+    .step-question {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* ── Rank badge ── */
+    .field-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .rank-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--white);
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ── Inputs ── */
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: var(--text);
+      font-family: inherit;
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.18s;
+    }
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: var(--navy);
+    }
+    input[type="text"].error,
+    textarea.error {
+      border-color: var(--error);
+    }
+    textarea { resize: vertical; min-height: 120px; }
+
+    .field-error {
+      font-size: 0.75rem;
+      color: var(--error);
+      margin-top: 5px;
+      display: none;
+    }
+    .field-error.visible { display: block; }
+
+    /* ── Buttons ── */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .btn-primary {
+      flex: 1;
+      background: var(--orange);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      padding: 13px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.18s, transform 0.1s;
+    }
+    .btn-primary:hover { background: #e85c22; }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-back {
+      background: none;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 13px 18px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color 0.18s, color 0.18s;
+    }
+    .btn-back:hover { border-color: var(--navy); color: var(--navy); }
+
+    /* ── Step 4 confirmation ── */
+    .confirm-box {
+      border-left: 4px solid var(--orange);
+      background: var(--navy);
+      border-radius: 0 10px 10px 0;
+      padding: 24px 22px;
+      margin-top: 20px;
+      color: var(--white);
+    }
+    .confirm-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--orange);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .confirm-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .confirm-sub {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.65);
+    }
+
+    .confirm-contact {
+      margin-top: 24px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    .confirm-contact a {
+      color: var(--orange);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .confirm-contact a:hover { text-decoration: underline; }
+
+    .btn-reset {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      text-decoration: underline;
+    }
+    .btn-reset:hover { color: var(--navy); }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 32px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #111827;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 100;
+      white-space: nowrap;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 580px) {
+      .card { padding: 28px 20px 24px; }
+      body { padding: 24px 12px 48px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">Ad<span>'</span>Form</div>
+    <div class="tagline">Accélération IA &amp; Business</div>
+  </header>
+
+  <div class="card">
+
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div class="progress-label" id="progressLabel">Étape 1 sur 4</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="step active" id="step1">
+      <div class="step-heading">Commençons par le début.</div>
+      <div class="step-question">Quel est votre secteur d'activité ?</div>
+      <input type="text" id="sector" placeholder="Ex: Immobilier, E-commerce, Conseil…" autocomplete="off">
+      <div class="field-error" id="sectorError">Merci de renseigner votre secteur d'activité.</div>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="goNext(1)">Continuer <span>→</span></button>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step" id="step2">
+      <div class="step-heading">Vos générateurs de revenus.</div>
+      <div class="step-question">Classez les 3 services qui vous rapportent le plus aujourd'hui :</div>
+
+      <div class="field-group">
+        <div class="rank-badge">1</div>
+        <input type="text" id="service1" placeholder="Service principal" autocomplete="off">
+      </div>
+      <div class="field-group">
+        <div class="rank-badge">2</div>
+        <input type="text" id="service2" placeholder="Second service" autocomplete="off">
+      </div>
+      <div class="field-group">
+        <div class="rank-badge">3</div>
+        <input type="text" id="service3" placeholder="Troisième service" autocomplete="off">
+      </div>
+      <div class="field-error" id="servicesError">Merci de renseigner au moins votre service principal.</div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goBack(2)">← Retour</button>
+        <button class="btn-primary" onclick="goNext(2)">Suivant <span>→</span></button>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step" id="step3">
+      <div class="step-heading">Le point de blocage.</div>
+      <div class="step-question">Quelle est votre problématique actuelle majeure ?</div>
+      <textarea id="problem" placeholder="Dites-nous ce qui vous empêche de passer au niveau supérieur…" rows="5"></textarea>
+      <div class="field-error" id="problemError">Merci de décrire votre problématique principale.</div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="goBack(3)">← Retour</button>
+        <button class="btn-primary" onclick="submitForm()">Finaliser ma demande <span>→</span></button>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step" id="step4">
+      <div class="step-heading">C'est noté !</div>
+      <div class="step-question">Merci pour ces précisions. Nous avons maintenant les éléments clés pour faire de notre échange un moment à forte valeur ajoutée pour vous.</div>
+
+      <div class="confirm-box">
+        <div class="confirm-label">À très vite</div>
+        <div class="confirm-title">Meeting avec Louis</div>
+        <div class="confirm-sub">Nous nous réjouissons de vous rencontrer.</div>
+        <!--
+          Pour ajouter un lien Calendly, décommentez et modifiez la ligne ci-dessous :
+          <div style="margin-top:16px"><a href="https://calendly.com/votre-lien" style="color:#FF6B2B;font-weight:600;font-size:.85rem;">→ Réserver mon créneau</a></div>
+        -->
+      </div>
+
+      <div class="confirm-contact">
+        Une question ? <a href="mailto:contact@formai.ch">contact@formai.ch</a>
+      </div>
+
+      <button class="btn-reset" onclick="resetForm()">Soumettre une nouvelle réponse</button>
+    </div>
+
+  </div>
+
+  <footer>Ad'Form &copy; 2024 &nbsp;·&nbsp; Accélération IA &amp; Business</footer>
+
+  <div id="toast"></div>
+
+  <script>
+    // ── CONFIGURE YOUR WEBHOOK URL HERE ──────────────────────────────────────
+    const WEBHOOK_URL = ''; // Collez votre URL Make ou Zapier entre les guillemets
+    // ─────────────────────────────────────────────────────────────────────────
+
+    let currentStep = 1;
+
+    function showStep(n) {
+      currentStep = n;
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      document.getElementById('progressLabel').textContent = 'Étape ' + n + ' sur 4';
+      document.getElementById('progressFill').style.width = (n / 4 * 100) + '%';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function clearError(fieldId, errorId) {
+      const field = document.getElementById(fieldId);
+      const err = document.getElementById(errorId);
+      if (field) field.classList.remove('error');
+      if (err) err.classList.remove('visible');
+    }
+
+    function showError(fieldId, errorId) {
+      const field = document.getElementById(fieldId);
+      const err = document.getElementById(errorId);
+      if (field) field.classList.add('error');
+      if (err) err.classList.add('visible');
+      if (field) field.focus();
+    }
+
+    function validateStep(n) {
+      if (n === 1) {
+        clearError('sector', 'sectorError');
+        if (!document.getElementById('sector').value.trim()) {
+          showError('sector', 'sectorError');
+          return false;
+        }
+      }
+      if (n === 2) {
+        clearError('service1', 'servicesError');
+        if (!document.getElementById('service1').value.trim()) {
+          showError('service1', 'servicesError');
+          return false;
+        }
+      }
+      if (n === 3) {
+        clearError('problem', 'problemError');
+        if (!document.getElementById('problem').value.trim()) {
+          showError('problem', 'problemError');
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function goNext(from) {
+      if (!validateStep(from)) return;
+      showStep(from + 1);
+    }
+
+    function goBack(from) {
+      showStep(from - 1);
+    }
+
+    async function submitForm() {
+      if (!validateStep(3)) return;
+
+      const payload = {
+        sector: document.getElementById('sector').value.trim(),
+        top3services: [
+          document.getElementById('service1').value.trim(),
+          document.getElementById('service2').value.trim(),
+          document.getElementById('service3').value.trim(),
+        ].filter(Boolean),
+        problem: document.getElementById('problem').value.trim(),
+        sourceURL: window.location.href,
+        timestamp: new Date().toISOString(),
+      };
+
+      if (WEBHOOK_URL) {
+        try {
+          await fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+        } catch (_) {
+          // échec silencieux — l'utilisateur voit quand même l'étape 4
+        }
+      }
+
+      showStep(4);
+    }
+
+    function resetForm() {
+      ['sector', 'service1', 'service2', 'service3', 'problem'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.value = ''; el.classList.remove('error'); }
+      });
+      document.querySelectorAll('.field-error').forEach(e => e.classList.remove('visible'));
+      showStep(1);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // Init
+    showStep(1);
+  </script>
+</body>
+</html>
