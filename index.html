@@ -52,7 +52,7 @@
         #progress-fill {
             height: 100%;
             background-color: var(--orange);
-            width: 25%;
+            width: 20%; /* Initial 1/5 */
             transition: width 0.4s ease;
         }
 
@@ -97,6 +97,54 @@
             margin-right: 12px;
             flex-shrink: 0;
         }
+
+        /* Custom Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: var(--bg-light);
+            border-radius: 4px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: var(--orange);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: var(--bg-light);
+            border-radius: 4px;
+        }
+
+        input[type=range]::-moz-range-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: var(--orange);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -111,7 +159,7 @@
                 <div class="progress-bar">
                     <div id="progress-fill"></div>
                 </div>
-                <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest font-semibold" id="step-indicator">Étape 1 sur 4</p>
+                <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest font-semibold" id="step-indicator">Étape 1 sur 5</p>
             </div>
         </div>
     </header>
@@ -164,8 +212,43 @@
                     </div>
                 </div>
 
-                <!-- ETAPE 3 : Problématique -->
+                <!-- ETAPE 3 : Rayon d'action (Nouveau) -->
                 <div class="step-content" id="step3">
+                    <h2 class="text-2xl md:text-3xl font-bold text-navy mb-2">Votre marché local.</h2>
+                    <p class="text-gray-500 mb-8">Définissons précisément votre rayon d'action :</p>
+                    
+                    <div class="space-y-8">
+                        <div>
+                            <label class="block text-sm font-bold text-navy uppercase tracking-wider mb-2">Votre ville de référence</label>
+                            <input type="text" id="city" placeholder="Ex: Genève, Fribourg, Paris..." 
+                                   class="w-full p-4 border-b-2 border-gray-200 text-lg transition-all">
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <label class="block text-sm font-bold text-navy uppercase tracking-wider">Rayon d'intervention</label>
+                                <span id="radius-value" class="text-orange-600 font-bold text-xl">50 km</span>
+                            </div>
+                            <input type="range" id="radius" min="0" max="250" step="5" value="50" 
+                                   oninput="document.getElementById('radius-value').innerText = this.value + ' km'"
+                                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-xs text-gray-400 mt-2 font-semibold uppercase">
+                                <span>Local</span>
+                                <span>250 km+</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 flex items-center space-x-4">
+                        <button type="button" onclick="nextStep(4)" class="btn-primary text-white px-8 py-4 rounded-full font-bold">
+                            Suivant
+                        </button>
+                        <button type="button" onclick="prevStep(2)" class="text-gray-400 hover:text-navy text-sm font-semibold uppercase tracking-wider">Retour</button>
+                    </div>
+                </div>
+
+                <!-- ETAPE 4 : Problématique -->
+                <div class="step-content" id="step4">
                     <h2 class="text-2xl md:text-3xl font-bold text-navy mb-2">Le point de blocage.</h2>
                     <p class="text-gray-500 mb-8">Quelle est votre problématique actuelle majeure ?</p>
                     <textarea id="problem" rows="4" placeholder="Dites-nous ce qui vous empêche de passer au niveau supérieur..." 
@@ -175,12 +258,12 @@
                         <button type="button" id="submit-btn" onclick="submitForm()" class="btn-primary text-white px-8 py-4 rounded-full font-bold flex items-center">
                             Finaliser ma demande
                         </button>
-                        <button type="button" onclick="prevStep(2)" class="text-gray-400 hover:text-navy text-sm font-semibold uppercase tracking-wider">Retour</button>
+                        <button type="button" onclick="prevStep(3)" class="text-gray-400 hover:text-navy text-sm font-semibold uppercase tracking-wider">Retour</button>
                     </div>
                 </div>
 
-                <!-- ETAPE 4 : Confirmation -->
-                <div class="step-content text-center" id="step4">
+                <!-- ETAPE 5 : Confirmation -->
+                <div class="step-content text-center" id="step5">
                     <div class="mb-6 flex justify-center">
                         <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -216,18 +299,24 @@
     <script>
         // CONFIGURATION WEBHOOK
         const WEBHOOK_URL = "https://hook.eu2.make.com/1o9511k2vrfx37vzwet7vdyifplblie9"; 
+        const TOTAL_STEPS = 5;
 
         function updateProgress(step) {
             const fill = document.getElementById('progress-fill');
             const indicator = document.getElementById('step-indicator');
-            const percentage = (step / 4) * 100;
+            const percentage = (step / TOTAL_STEPS) * 100;
             fill.style.width = percentage + '%';
-            indicator.innerText = `Étape ${step} sur 4`;
+            indicator.innerText = `Étape ${step} sur ${TOTAL_STEPS}`;
         }
 
         function nextStep(step) {
+            // Validation simple
             if (step === 2 && document.getElementById('sector').value.trim() === '') {
                 showToast("Veuillez renseigner votre secteur.");
+                return;
+            }
+            if (step === 4 && document.getElementById('city').value.trim() === '') {
+                showToast("Veuillez indiquer votre ville.");
                 return;
             }
 
@@ -246,7 +335,7 @@
             const btn = document.getElementById('submit-btn');
             const originalText = btn.innerHTML;
             
-            // Collecte des données
+            // Collecte des données incluant le nouveau rayon d'action
             const formData = {
                 sector: document.getElementById('sector').value,
                 top_services: [
@@ -254,6 +343,10 @@
                     document.getElementById('service2').value,
                     document.getElementById('service3').value
                 ],
+                location: {
+                    city: document.getElementById('city').value,
+                    radius: document.getElementById('radius').value + " km"
+                },
                 problematic: document.getElementById('problem').value,
                 source: window.location.href,
                 submittedAt: new Date().toISOString()
@@ -270,9 +363,7 @@
             `;
 
             try {
-                // Utilisation de fetch standard sans no-cors pour permettre l'envoi du JSON
-                // Note: Make.com accepte par défaut les requêtes cross-origin
-                const response = await fetch(WEBHOOK_URL, {
+                await fetch(WEBHOOK_URL, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
@@ -281,14 +372,10 @@
                     body: JSON.stringify(formData)
                 });
 
-                // Sur GitHub Pages, même si Make ne renvoie pas les bons headers CORS,
-                // la donnée est généralement bien reçue par le serveur.
-                nextStep(4);
+                nextStep(5);
             } catch (error) {
                 console.error("Erreur d'envoi Webhook:", error);
-                // On passe quand même à l'étape suivante pour l'expérience utilisateur,
-                // car Make reçoit souvent la donnée même si le navigateur râle sur le CORS.
-                nextStep(4); 
+                nextStep(5); 
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = originalText;
