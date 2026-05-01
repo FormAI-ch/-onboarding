@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
+<!-- Version: 1.0.2 - Mise à jour Rayon d'action et Webhook -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <title>Qualification Lead | Ad'Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -212,7 +214,7 @@
                     </div>
                 </div>
 
-                <!-- ETAPE 3 : Rayon d'action (Nouveau) -->
+                <!-- ETAPE 3 : Rayon d'action -->
                 <div class="step-content" id="step3">
                     <h2 class="text-2xl md:text-3xl font-bold text-navy mb-2">Votre marché local.</h2>
                     <p class="text-gray-500 mb-8">Définissons précisément votre rayon d'action :</p>
@@ -310,7 +312,6 @@
         }
 
         function nextStep(step) {
-            // Validation simple
             if (step === 2 && document.getElementById('sector').value.trim() === '') {
                 showToast("Veuillez renseigner votre secteur.");
                 return;
@@ -323,19 +324,20 @@
             document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
             document.getElementById('step' + step).classList.add('active');
             updateProgress(step);
+            window.scrollTo(0, 0);
         }
 
         function prevStep(step) {
             document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
             document.getElementById('step' + step).classList.add('active');
             updateProgress(step);
+            window.scrollTo(0, 0);
         }
 
         async function submitForm() {
             const btn = document.getElementById('submit-btn');
             const originalText = btn.innerHTML;
             
-            // Collecte des données incluant le nouveau rayon d'action
             const formData = {
                 sector: document.getElementById('sector').value,
                 top_services: [
@@ -352,7 +354,6 @@
                 submittedAt: new Date().toISOString()
             };
 
-            // État de chargement
             btn.disabled = true;
             btn.innerHTML = `
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
